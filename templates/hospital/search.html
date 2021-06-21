@@ -1,0 +1,99 @@
+{% extends 'hospital/index.html' %}
+{% load staticfiles %}
+{% block title %}SEARCH THE CATALOG{% endblock title %}
+{% load widget_tweaks %}
+{% block content %}
+    <div class="container">
+        <div class="card col-md-8 offset-md-2 mt-5" style="opacity: 0.95;">
+            <form method="get" action="{% url 'search' %}">
+                <div class="form-group mt-5">
+                    <select name='city' class="form-control mb-2">
+                        <option value="0" selected>Select city</option>
+                        {% for city in cities %}
+                            <option value="{{city.id}}">{{city.city}}</option>
+				<option value="{{city.city}}">{{city.city}}</option>
+                        {% endfor %}
+
+
+                    </select>
+
+
+
+               
+              
+                    <select name='group' class="form-control mb-2">
+                        <option value="0" selected>Select blood group</option>
+                        <option value="A+">A+</option>
+                        <option value="O+">O+</option>
+                        <option value="AB+">AB+</option>
+                        <option value="A-">A-</option>
+                        <option value="O-">O-</option>
+                        <option value="B-">B-</option>
+                        <option value="AB-">AB-</option>
+                    </select>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-md btn-success">
+                            <span class="fa fa-search mr-2"></span>Search
+                        </button>
+                    </div>
+                </div>    
+            </form>
+        </div>
+        <div class="card col-md-8 offset-md-2 mt-2"  style="opacity: 0.80">
+            <div class="alert-success alert mt-2 p-1 pl-2 ">Search results!</div>
+            <div class="card-body mt-2">
+                <table class="table-responsive-sm table table-hover text-center table-bordered">
+                    <tr class="bg-dark text-white">
+                        <th>#</th>
+                        <th>BG</th>
+                        <th>City</th>
+                        <th>Cell</th>
+                    </tr>
+                    {% if donors %}
+                        {% for donor in donors %}
+                            <tr>
+                                <td >{{forloop.counter}}</td>
+                                <td><a target="_blank" href="{{donor.get_public_profile_link}}">{{donor.group}}</a></td>
+                                <td>{{donor.city}}</td>
+                                <td><a target="_blank" href="{{donor.get_public_profile_link}}">{{donor.phone}}</a></td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-danger text-center">No donors found!</div>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+        <div class='col-md-8 offset-md-2 mt-5'>
+            {% if donors.has_other_pages %}
+            <ul class="pagination">
+                {% if donors.has_previous %}
+                    <li><a class="btn btn-sm btn-primary"
+                        href="?city={{q_city}}&group={{q_group}}&page={{ donors.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                    <li><a class="disabled btn btn-sm btn-primary disabled"
+                        href="#">&laquo;</a></li>
+                {% endif %}
+                {% for i in donors.paginator.page_range %}
+                    {% if donors.number == i %}
+                        <li><a class="btn btn-sm btn-info disabled" href="#">{{i}}</a></li>
+                    {% else %}
+                        <li><a class="btn btn-sm btn-primary" href="?city={{q_city}}&group={{q_group}}&page={{ i }}"
+                            >{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if donors.has_next %}
+                    <li><a class="btn btn-sm btn-primary"
+                        href="?city={{q_city}}&group={{q_group}}&page={{ donors.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                    <li><a class="btn btn-sm btn-primary disabled">&raquo;</a></li>
+                {% endif %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}
+
+{% block js %}
+
+{% endblock js %}

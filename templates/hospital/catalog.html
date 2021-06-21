@@ -1,0 +1,62 @@
+{% extends 'hospital/index.html' %}
+{% load staticfiles %}
+{% block title %}DONOR CATALOG{% endblock title %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="card-body col-md-8 offset-md-2 bg-white" style="opacity: 0.85;
+          min-height: 300px">
+            {% if donors %}
+                <table class="table-responsive-sm table table-hover text-center ">
+                    <tr class="bg-dark text-white">
+                        <th >#</th>
+                        <th>Name</th>
+                        <th >Group</th>
+                        <th >Phone</th>
+                    </tr>
+                    {% for donor in donors %}
+                        <tr>
+                            <td >{{forloop.counter}}</td>
+                            <td >
+                                <a href="{{donor.get_public_profile_link}}">{{donor.get_full_name}}</a>
+                            </td>
+                            <td ><a href="{{donor.get_public_profile_link}}">{{donor.group}}</a></td>
+                            <td ><a href="{{donor.get_public_profile_link}}">{{donor.phone}}</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <div class="alert alert-danger text-center font-kalam-bold" role='alert'>
+                    No data found!
+                </div>
+            {% endif %}
+        </div>
+        <div class='col-md-8 offset-md-2 mt-3 pl-0'>
+            {% if donors.has_other_pages %}
+            <ul class="pagination">
+                {% if donors.has_previous %}
+                    <li><a class="btn btn-sm btn-primary"
+                        href="?page={{ donors.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                    <li><a class="disabled btn btn-sm btn-primary disabled"
+                        href="#">&laquo;</a></li>
+                {% endif %}
+                {% for i in donors.paginator.page_range %}
+                    {% if donors.number == i %}
+                        <li><a class="btn btn-sm btn-info disabled" href="#">{{i}}</a></li>
+                    {% else %}
+                        <li><a class="btn btn-sm btn-primary" href="?page={{ i }}"
+                            >{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if donors.has_next %}
+                    <li><a class="btn btn-sm btn-primary"
+                        href="?page={{ donors.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                    <li><a class="btn btn-sm btn-primary disabled">&raquo;</a></li>
+                {% endif %}
+            </ul>
+            {% endif %}
+          </div>
+    </div>
+{% endblock content %}
